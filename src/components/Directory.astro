@@ -1,0 +1,117 @@
+---
+import tools from '../data/tools.json';
+import ToolIcon from './ToolIcon.astro';
+
+const categories = ['All tools', 'Browsing', 'Messaging', 'Email', 'Networks'];
+const platforms = [...new Set(tools.flatMap((tool) => tool.platforms))].sort();
+const searchableTools = tools.map(({ slug, name, category, description, aliases, platforms }) => ({
+  slug,
+  name,
+  category,
+  description,
+  aliases,
+  platforms,
+}));
+---
+
+<section class="directory section-shell" id="directory" aria-labelledby="directory-title">
+  <aside class="directory__categories" aria-label="Tool categories">
+    {categories.map((category, index) => (
+      <button
+        class:list={["category-button", { "is-active": index === 0 }]}
+        type="button"
+        data-category={category}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+      >
+        {category}
+      </button>
+    ))}
+  </aside>
+
+  <div class="directory__main">
+    <div class="directory__heading">
+      <div>
+        <p class="eyebrow">Independent directory</p>
+        <h2 id="directory-title">Explore tools</h2>
+      </div>
+      <button class="filter-trigger" type="button" aria-expanded="false" aria-controls="filter-panel">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M5 10h10M8 15h4" /></svg>
+        Filters
+        <span class="filter-trigger__count" data-filter-count hidden>0</span>
+      </button>
+    </div>
+
+    <div class="filter-panel" id="filter-panel" hidden>
+      <div class="filter-panel__top">
+        <p>Refine the directory</p>
+        <button class="icon-button" type="button" data-close-filters aria-label="Close filters">Close</button>
+      </div>
+      <fieldset>
+        <legend>Category</legend>
+        <div class="filter-options filter-options--categories">
+          {categories.map((category, index) => (
+            <button
+              class:list={["filter-chip", { "is-active": index === 0 }]}
+              type="button"
+              data-filter-category={category}
+              aria-pressed={index === 0 ? 'true' : 'false'}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Platforms</legend>
+        <div class="filter-options">
+          {platforms.map((platform) => (
+            <label class="check-option">
+              <input type="checkbox" value={platform} data-platform />
+              <span>{platform}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <button class="text-button" type="button" data-clear-filters>Clear filters</button>
+    </div>
+
+    <div class="active-filters" data-active-filters aria-live="polite"></div>
+
+    <div class="result-summary">
+      <p data-result-count>{tools.length} tools</p>
+      <p class="result-summary__hint">Reviewed from primary sources</p>
+    </div>
+
+    <div class="tool-list" data-tool-list>
+      {tools.map((tool) => (
+        <article
+          class="tool-row"
+          data-tool={tool.slug}
+          data-category-name={tool.category}
+          data-platform-names={tool.platforms.join('|')}
+        >
+          <a class="tool-row__icon-link" href={`/tools/${tool.slug}/`} tabindex="-1" aria-hidden="true">
+            <ToolIcon tool={tool.slug} />
+          </a>
+          <div class="tool-row__identity">
+            <h3><a href={`/tools/${tool.slug}/`}>{tool.name}</a></h3>
+            <span class="tool-row__category tool-row__category--mobile">{tool.category}</span>
+          </div>
+          <p class="tool-row__description">{tool.description}</p>
+          <span class="tool-row__category tool-row__category--desktop">{tool.category}</span>
+          <a class="tool-row__link" href={`/tools/${tool.slug}/`} aria-label={`View ${tool.name}`}>View tool</a>
+        </article>
+      ))}
+    </div>
+
+    <div class="empty-state" data-empty-state hidden>
+      <div class="empty-state__glyph" aria-hidden="true">00</div>
+      <h3>No tools match this combination.</h3>
+      <p data-empty-description>Try a broader search or remove one of the active filters.</p>
+      <button class="button button--outline" type="button" data-clear-filters>Clear filters</button>
+    </div>
+  </div>
+</section>
+
+<script id="directory-data" type="application/json" set:html={JSON.stringify(searchableTools)}></script>
+<script is:inline src="/scripts/directory.js"></script>

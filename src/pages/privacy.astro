@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy — KeepMeDark"
+  description="How KeepMeDark handles search data, cookies and GitHub Pages hosting logs."
+>
+  <main id="main-content" class="prose-shell">
+    <header class="prose-shell__intro">
+      <p class="eyebrow">Privacy notice</p>
+      <h1>Less data by design<span style="color: var(--accent)">.</span></h1>
+      <p class="prose-shell__lede">KeepMeDark is a static website. We designed it to work without accounts, analytics, advertising or tracking cookies.</p>
+    </header>
+
+    <div class="prose-grid">
+      <section class="prose-section">
+        <h2>Search</h2>
+        <div>
+          <p>Your search is matched against the catalog inside your browser. Search text is kept only in page memory and is not added to the URL, sent to a server or saved in local storage.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>Cookies and scripts</h2>
+        <div>
+          <p>We do not set cookies, load third-party analytics or embed remote fonts and scripts. The font, icons and interactive illustration are served from the same domain as the page.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>Hosting logs</h2>
+        <div>
+          <p>This site is hosted by GitHub Pages. GitHub states that it logs and stores a visitor’s IP address for security purposes, whether or not that visitor is signed in to GitHub. That processing is controlled by GitHub, not KeepMeDark.</p>
+          <p>Read <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection" rel="noreferrer">GitHub’s Pages data collection notice</a> and <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noreferrer">GitHub’s privacy statement</a> for details.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>External links</h2>
+        <div>
+          <p>Tool profiles link to external project sites and documentation. Once you follow one of those links, that site’s privacy practices apply.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>Questions</h2>
+        <div>
+          <p>Questions and corrections can be filed in the <a href="https://github.com/StarMKT/keepmedark.github.io/issues" rel="noreferrer">public GitHub repository</a>.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

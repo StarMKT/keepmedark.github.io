@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "tor-browser",
+    "name": "Tor Browser",
+    "category": "Browsing",
+    "description": "A hardened browser that routes web traffic through the Tor network to reduce tracking and hide your source IP.",
+    "aliases": ["anonymous browser", "private browsing", "hide ip", "anti tracking", "censorship circumvention", "onion sites"],
+    "platforms": ["Windows", "macOS", "Linux", "Android"],
+    "protects": [
+      "Routes the browser’s traffic through multiple Tor relays so websites do not receive your source IP address.",
+      "Reduces cross-site tracking and browser fingerprinting with a deliberately standardized browser configuration.",
+      "Clears browsing history by default and limits cookies to the current session."
+    ],
+    "limitations": [
+      "Tor Browser protects only traffic inside the browser, not other apps on your device.",
+      "Signing in or sharing identifying information can reveal who you are to a service even when your IP is hidden.",
+      "Tor cannot guarantee perfect anonymity. Downloads, add-ons and torrenting can expose you or weaken its protections."
+    ],
+    "account": "No account is required to download or use Tor Browser.",
+    "website": "https://www.torproject.org/download/",
+    "reviewed": "2026-11-21",
+    "sources": [
+      {
+        "label": "About Tor Browser",
+        "url": "https://support.torproject.org/tor-browser/getting-started/about-tor-browser/"
+      },
+      {
+        "label": "Tor Browser best practices",
+        "url": "https://support.torproject.org/tor-browser/security/using-tb-safely/"
+      }
+    ]
+  },
+  {
+    "slug": "signal",
+    "name": "Signal",
+    "category": "Messaging",
+    "description": "An end-to-end encrypted messenger for private messages, voice calls and video calls.",
+    "aliases": ["private messaging", "secure chat", "encrypted messages", "encrypted calls", "texting", "messenger"],
+    "platforms": ["Android", "iOS", "Windows", "macOS", "Linux"],
+    "protects": [
+      "End-to-end encrypts Signal-to-Signal messages and calls so their content is available only to participants.",
+      "Supports disappearing messages and safety-number verification for sensitive conversations.",
+      "Usernames and phone-number privacy settings can let you connect without showing your number to new contacts."
+    ],
+    "limitations": [
+      "Both participants need Signal; it no longer sends or receives ordinary SMS or MMS.",
+      "A phone number that can receive a registration code is still required to create an account.",
+      "Encryption protects message content, but it cannot protect a compromised device or prevent a recipient from copying what you send."
+    ],
+    "account": "A Signal account and a phone number able to receive a registration code are required. Desktop apps are linked to a registered account.",
+    "website": "https://signal.org/download/",
+    "reviewed": "2026-11-21",
+    "sources": [
+      {
+        "label": "Installing Signal",
+        "url": "https://support.signal.org/hc/en-us/articles/360008216551-Installing-Signal"
+      },
+      {
+        "label": "Phone number privacy and usernames",
+        "url": "https://support.signal.org/hc/en-us/articles/6829998083994-Phone-Number-Privacy-and-Usernames-Deeper-Dive"
+      },
+      {
+        "label": "Signal and SMS/MMS",
+        "url": "https://support.signal.org/hc/en-us/articles/360007321171-Can-I-send-SMS-MMS-with-Signal"
+      },
+      {
+        "label": "Signal safety numbers",
+        "url": "https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed"
+      },
+      {
+        "label": "Signal disappearing messages",
+        "url": "https://support.signal.org/hc/en-us/articles/360007320771-Set-and-manage-disappearing-messages"
+      }
+    ]
+  },
+  {
+    "slug": "proton-mail",
+    "name": "Proton Mail",
+    "category": "Email",
+    "description": "An encrypted email service with zero-access storage and automatic end-to-end encryption between Proton users.",
+    "aliases": ["private email", "encrypted email", "secure inbox", "email privacy", "pgp email"],
+    "platforms": ["Web", "Android", "iOS"],
+    "protects": [
+      "Stores mailbox content with zero-access encryption so Proton does not hold the key needed to read it.",
+      "Automatically end-to-end encrypts messages exchanged between Proton Mail users.",
+      "Offers password-protected messages and PGP for end-to-end encrypted mail with people on other providers."
+    ],
+    "limitations": [
+      "Mail sent to another provider uses transport encryption by default, not end-to-end encryption, unless you use PGP or a password-protected message.",
+      "Email addressing metadata and subject lines are not end-to-end encrypted.",
+      "An email service improves message confidentiality but does not make your identity or network activity anonymous."
+    ],
+    "account": "A Proton account is required. A free plan is available; recovery options should be configured carefully.",
+    "website": "https://proton.me/mail",
+    "reviewed": "2026-11-21",
+    "sources": [
+      {
+        "label": "What Proton Mail encrypts",
+        "url": "https://proton.me/support/what-is-encrypted-within-protonmail"
+      },
+      {
+        "label": "Proton Mail security",
+        "url": "https://proton.me/mail/security"
+      }
+    ]
+  },
+  {
+    "slug": "mullvad-vpn",
+    "name": "Mullvad VPN",
+    "category": "Networks",
+    "description": "A paid VPN that encrypts traffic to its servers and replaces your public IP with a shared address.",
+    "aliases": ["vpn", "hide ip", "private network", "encrypted tunnel", "public wifi", "network privacy"],
+    "platforms": ["Windows", "macOS", "Linux", "Android", "iOS"],
+    "protects": [
+      "Encrypts network traffic between your device and the selected Mullvad VPN server.",
+      "Replaces your public IP address with one shared by other customers, reducing direct IP-based linking by destinations.",
+      "Includes leak protection and a kill switch in its apps to reduce accidental traffic outside the VPN tunnel."
+    ],
+    "limitations": [
+      "A VPN shifts trust from your internet provider to the VPN operator; it does not make you anonymous by itself.",
+      "Websites can still identify you through accounts, cookies, browser fingerprinting and information you disclose.",
+      "The service is paid, and an active subscription is required to connect."
+    ],
+    "account": "Mullvad uses a randomly generated account number instead of an email/password login. The VPN requires paid time on that account.",
+    "website": "https://mullvad.net/en/download/vpn/",
+    "reviewed": "2026-11-21",
+    "sources": [
+      {
+        "label": "Mullvad terms of service",
+        "url": "https://mullvad.net/en/help/terms-service"
+      },
+      {
+        "label": "Mullvad privacy policy",
+        "url": "https://mullvad.net/en/help/privacy-policy"
+      },
+      {
+        "label": "Mullvad security help",
+        "url": "https://mullvad.net/en/help?Topic=security"
+      }
+    ]
+  }
+]

@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found — KeepMeDark" description="The page you requested could not be found.">
+  <main id="main-content" class="not-found section-shell">
+    <p class="not-found__code">404</p>
+    <h1>This path went dark<span>.</span></h1>
+    <p>The page may have moved, or the address may be incomplete.</p>
+    <div class="not-found__actions">
+      <a class="button" href="/">Return home</a>
+      <a class="button button--outline" href="/#directory">Browse the directory</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: flex;
+    min-height: 65vh;
+    padding-top: 5rem;
+    padding-bottom: 7rem;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .not-found__code {
+    margin: 0 0 1rem;
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+  }
+
+  h1 {
+    max-width: 10ch;
+    margin: 0;
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 520;
+    letter-spacing: -0.075em;
+    line-height: 0.9;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .not-found > p:not(.not-found__code) {
+    margin: 2rem 0 0;
+    color: var(--muted);
+  }
+
+  .not-found__actions {
+    display: flex;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+</style>

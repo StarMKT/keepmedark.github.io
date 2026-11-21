@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ToolIcon from '../../../components/ToolIcon.astro';
+import tools from '../../../data/tools.json';
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const reviewed = new Intl.DateTimeFormat('en', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${tool.reviewed}T00:00:00Z`));
+---
+
+<BaseLayout title={`${tool.name} — KeepMeDark`} description={tool.description}>
+  <main id="main-content" class="tool-page section-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/#directory">Directory</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{tool.name}</span>
+    </nav>
+
+    <header class="tool-hero">
+      <div class="tool-hero__identity">
+        <ToolIcon tool={tool.slug} size="large" />
+        <div>
+          <p class="eyebrow">{tool.category}</p>
+          <h1>{tool.name}</h1>
+        </div>
+      </div>
+      <div class="tool-hero__summary">
+        <p>{tool.description}</p>
+        <div class="tool-hero__actions">
+          <a class="button" href={tool.website} rel="noreferrer">Official website</a>
+          <span>Last reviewed <time datetime={tool.reviewed}>{reviewed}</time></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="tool-details">
+      <section class="detail-section" aria-labelledby="protects-title">
+        <div class="detail-section__label">
+          <span aria-hidden="true">01</span>
+          <h2 id="protects-title">What it protects</h2>
+        </div>
+        <ul>
+          {tool.protects.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="detail-section" aria-labelledby="limitations-title">
+        <div class="detail-section__label">
+          <span aria-hidden="true">02</span>
+          <h2 id="limitations-title">Limitations</h2>
+        </div>
+        <ul>
+          {tool.limitations.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="detail-section" aria-labelledby="platforms-title">
+        <div class="detail-section__label">
+          <span aria-hidden="true">03</span>
+          <h2 id="platforms-title">Platforms</h2>
+        </div>
+        <div class="platform-list">
+          {tool.platforms.map((platform) => <span>{platform}</span>)}
+        </div>
+      </section>
+
+      <section class="detail-section" aria-labelledby="account-title">
+        <div class="detail-section__label">
+          <span aria-hidden="true">04</span>
+          <h2 id="account-title">Account requirements</h2>
+        </div>
+        <p>{tool.account}</p>
+      </section>
+
+      <section class="detail-section" aria-labelledby="sources-title">
+        <div class="detail-section__label">
+          <span aria-hidden="true">05</span>
+          <h2 id="sources-title">Sources</h2>
+        </div>
+        <div>
+          <p class="sources-intro">Claims on this page were checked against these primary sources.</p>
+          <ul class="source-list">
+            {tool.sources.map((source) => (
+              <li><a href={source.url} rel="noreferrer">{source.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <aside class="tool-page__note">
+      <p><strong>A tool is not a threat model.</strong> Decide who you need protection from, what they can observe and what happens if the protection fails.</p>
+      <a href="/selection-criteria/">How we evaluate tools</a>
+    </aside>
+  </main>
+</BaseLayout>
+
+<style>
+  .tool-page {
+    padding-top: 2.25rem;
+    padding-bottom: clamp(6rem, 12vw, 10rem);
+  }
+
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--faint);
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+  }
+
+  .breadcrumbs a {
+    color: var(--muted);
+  }
+
+  .tool-hero {
+    display: grid;
+    padding: clamp(4rem, 8vw, 7.5rem) 0 clamp(4rem, 7vw, 6rem);
+    align-items: end;
+    grid-template-columns: minmax(20rem, 0.9fr) minmax(22rem, 1.1fr);
+    gap: clamp(2rem, 8vw, 8rem);
+  }
+
+  .tool-hero__identity {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  .tool-hero__identity .eyebrow {
+    margin-bottom: 0.65rem;
+  }
+
+  .tool-hero h1 {
+    margin: 0;
+    font-size: clamp(3rem, 6vw, 5.8rem);
+    font-weight: 540;
+    letter-spacing: -0.07em;
+    line-height: 0.95;
+  }
+
+  .tool-hero__summary > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(1.1rem, 2vw, 1.45rem);
+    line-height: 1.52;
+  }
+
+  .tool-hero__actions {
+    display: flex;
+    margin-top: 1.75rem;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .tool-hero__actions span {
+    color: var(--faint);
+    font-family: ui-monospace, monospace;
+    font-size: 0.69rem;
+  }
+
+  .tool-details {
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .detail-section {
+    display: grid;
+    padding: clamp(2.2rem, 5vw, 3.75rem) 0;
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .detail-section__label {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .detail-section__label span {
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    font-size: 0.68rem;
+  }
+
+  .detail-section h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 590;
+  }
+
+  .detail-section > ul,
+  .source-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .detail-section > ul li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--muted);
+  }
+
+  .detail-section > ul li::before {
+    position: absolute;
+    top: 0.7em;
+    left: 0;
+    width: 0.35rem;
+    height: 1px;
+    background: var(--accent);
+    content: '';
+  }
+
+  .detail-section li + li {
+    margin-top: 1rem;
+  }
+
+  .detail-section > p,
+  .sources-intro {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .platform-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .platform-list span {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+    font-size: 0.76rem;
+  }
+
+  .source-list {
+    margin-top: 1.15rem;
+  }
+
+  .source-list li + li {
+    margin-top: 0.6rem;
+  }
+
+  .source-list a {
+    color: var(--text);
+    text-decoration-color: var(--accent);
+  }
+
+  .tool-page__note {
+    display: flex;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    border: 1px solid #0b4566;
+    background: var(--selection);
+  }
+
+  .tool-page__note p {
+    max-width: 48rem;
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .tool-page__note strong {
+    color: var(--text);
+  }
+
+  .tool-page__note a {
+    flex: none;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 800px) {
+    .tool-hero {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .detail-section {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .tool-hero__identity {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .tool-hero__actions,
+    .tool-page__note {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

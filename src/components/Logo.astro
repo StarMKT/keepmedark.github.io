@@ -1,0 +1,53 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<span class:list={["brand", { "brand--compact": compact }]}>
+  <svg class="brand__mark" viewBox="0 0 36 36" aria-hidden="true">
+    <path class="brand__plane brand__plane--back" d="M4.5 29.5 7 13.5 17.5 3.5 16 29.5Z" />
+    <path class="brand__plane brand__plane--top" d="m17.5 3.5 12 8.5-3 17.5L16 29.5l2.25-7.25 5.5 2.5 1.75-10-7-4.5Z" />
+    <path class="brand__plane brand__plane--base" d="m4.5 29.5 11.5-7 10.5 7H16Z" />
+    <path class="brand__face" d="m18.5 10.25 7 4.5-1.75 10-5.5-2.5-2.25 7V14.5Z" />
+  </svg>
+  {!compact && <span class="brand__name">KeepMeDark</span>}
+</span>
+
+<style>
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.72rem;
+    color: var(--text);
+    font-size: 1.08rem;
+    font-weight: 620;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .brand__mark {
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    overflow: visible;
+  }
+
+  .brand--compact .brand__mark {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .brand__plane {
+    stroke: var(--accent);
+    stroke-width: 1.35;
+    stroke-linejoin: bevel;
+  }
+
+  .brand__plane--back { fill: color-mix(in srgb, var(--accent) 22%, transparent); }
+  .brand__plane--top { fill: color-mix(in srgb, var(--accent) 42%, transparent); }
+  .brand__plane--base { fill: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .brand__face { fill: #000; }
+</style>

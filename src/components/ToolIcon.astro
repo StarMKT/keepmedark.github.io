@@ -1,0 +1,45 @@
+---
+import { siMullvad, siProtonmail, siSignal, siTorbrowser } from 'simple-icons';
+
+interface Props {
+  tool: string;
+  size?: 'small' | 'large';
+}
+
+const { tool, size = 'small' } = Astro.props;
+const icons = {
+  'tor-browser': siTorbrowser,
+  signal: siSignal,
+  'proton-mail': siProtonmail,
+  'mullvad-vpn': siMullvad,
+};
+const icon = icons[tool as keyof typeof icons];
+---
+
+<span class:list={["tool-icon", `tool-icon--${size}`]} aria-hidden="true">
+  {icon && <svg viewBox="0 0 24 24"><path d={icon.path} /></svg>}
+</span>
+
+<style>
+  .tool-icon {
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    flex: none;
+    border: 1px solid var(--line-strong);
+    background: #020b11;
+    color: var(--accent);
+  }
+
+  .tool-icon--large {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  svg {
+    width: 54%;
+    height: 54%;
+    fill: currentColor;
+  }
+</style>

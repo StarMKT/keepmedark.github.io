@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Selection criteria — KeepMeDark"
+  description="How KeepMeDark selects privacy tools, verifies claims and handles corrections."
+>
+  <main id="main-content" class="prose-shell">
+    <header class="prose-shell__intro">
+      <p class="eyebrow">Editorial method</p>
+      <h1>Selection criteria<span style="color: var(--accent)">.</span></h1>
+      <p class="prose-shell__lede">A place in this directory is not an endorsement. It means a tool has a clear privacy use case, makes claims we can verify and gives people enough information to judge its trade-offs.</p>
+    </header>
+
+    <div class="prose-grid">
+      <section class="prose-section">
+        <h2>What qualifies</h2>
+        <div>
+          <p>We consider tools that meaningfully reduce data exposure, protect communication content, limit tracking or help people separate their identity from an activity.</p>
+          <ul>
+            <li>The privacy benefit must be central to the product, not a marketing add-on.</li>
+            <li>The project must have an official site, maintained releases and public documentation.</li>
+            <li>Its purpose and limits must be explainable without implying that encryption, privacy and anonymity are the same thing.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>What we check</h2>
+        <div>
+          <p>Every profile starts with the project’s primary documentation: technical explanations, support articles, privacy policies, source repositories and audit reports where available.</p>
+          <p>We check what data is protected, where encryption begins and ends, which platforms are supported, what an account requires and which common failure cases users should know. Each profile links to its sources and carries a real review date.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>What we avoid</h2>
+        <div>
+          <p>We do not rank tools by affiliate payouts, accept paid placement or present one product as a universal solution. KeepMeDark has no affiliate links. A polished privacy claim without enough evidence is not sufficient for inclusion.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>Review cycle</h2>
+        <div>
+          <p>Profiles are reviewed when material facts change and periodically as the catalog grows. The date on a page describes the last effective check of its claims, not a cosmetic edit.</p>
+          <p>Older review dates are a signal to verify the official sources before making a high-risk decision.</p>
+        </div>
+      </section>
+
+      <section class="prose-section">
+        <h2>Corrections</h2>
+        <div>
+          <p>Found an error or a missing limitation? <a href="https://github.com/StarMKT/keepmedark.github.io/issues/new" rel="noreferrer">Open a GitHub issue</a> with the tool name, the statement to change and a primary source. You can also submit a pull request that updates the catalog data.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

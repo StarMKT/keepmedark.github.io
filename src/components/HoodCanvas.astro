@@ -1,0 +1,348 @@
+<div class="hood-art" data-hood-art>
+  <canvas
+    class="hood-art__canvas"
+    data-hood-canvas
+    width="620"
+    height="540"
+    role="img"
+    aria-label="A hooded figure drawn with flowing blue lines. Move the pointer over it to push the lines aside."
+  ></canvas>
+  <img
+    class="hood-art__fallback"
+    data-hood-fallback
+    src="/images/hood-static.svg"
+    alt="A hooded figure formed by fine blue lines"
+    width="620"
+    height="540"
+  />
+  <noscript>
+    <style>.hood-art__canvas { display: none; } .hood-art__fallback { display: block; }</style>
+  </noscript>
+  <p class="hood-art__hint" aria-hidden="true"><span></span> Move through the lines</p>
+</div>
+
+<script is:inline>
+(() => {
+  const wrap = document.querySelector('[data-hood-art]');
+  const canvas = document.querySelector('[data-hood-canvas]');
+  const fallback = document.querySelector('[data-hood-fallback]');
+  if (!wrap || !canvas || !canvas.getContext) {
+    fallback?.classList.add('is-visible');
+    return;
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reducedMotion.matches) return;
+
+  const context = canvas.getContext('2d');
+  const W = 620;
+  const H = 540;
+  const lines = [];
+  const pointer = { x: 0, y: 0, active: false, kind: 'mouse' };
+  let scale = 1;
+  let visible = true;
+  let frame = 0;
+  let lastTime = performance.now();
+  let touchTimer = 0;
+
+  const cubicPoint = (p0, p1, p2, p3, t) => {
+    const u = 1 - t;
+    return {
+      x: u * u * u * p0.x + 3 * u * u * t * p1.x + 3 * u * t * t * p2.x + t * t * t * p3.x,
+      y: u * u * u * p0.y + 3 * u * u * t * p1.y + 3 * u * t * t * p2.y + t * t * t * p3.y,
+    };
+  };
+
+  const addCurve = (points, group, opacity = 1, width = 1.2) => {
+    const sampled = [];
+    const steps = group === 'rim' ? 30 : 42;
+    for (let i = 0; i <= steps; i += 1) {
+      const base = cubicPoint(points[0], points[1], points[2], points[3], i / steps);
+      sampled.push({ base, x: base.x, y: base.y, vx: 0, vy: 0 });
+    }
+    lines.push({ points: sampled, group, opacity, width, phase: lines.length * 0.29 });
+  };
+
+  // Crown and front edge: nested curves run from the rear drape to the face rim.
+  for (let i = 0; i < 36; i += 1) {
+    const q = i / 35;
+    addCurve([
+      { x: 70 + 87 * q, y: 410 - 21 * q },
+      { x: 110 + 126 * q, y: 150 + 56 * q },
+      { x: 330 + 35 * q, y: 45 + 140 * q },
+      { x: 460 - 28 * q, y: 140 + 200 * q },
+    ], 'crown', 0.62 + q * 0.34, i % 6 === 0 ? 1.55 : 1.05);
+  }
+
+  // Shoulder field, kept broad so the distant shoulder barely reacts.
+  for (let i = 0; i < 23; i += 1) {
+    const q = i / 22;
+    addCurve([
+      { x: 18, y: 522 - 35 * q },
+      { x: 118 + 18 * q, y: 414 - 24 * q },
+      { x: 348 + 28 * q, y: 338 + 35 * q },
+      { x: 614, y: 478 + 52 * q },
+    ], 'shoulder', 0.48 + q * 0.35, i % 5 === 0 ? 1.45 : 1);
+  }
+
+  // Face opening rim remains crisp while still yielding to the pointer.
+  for (let i = 0; i < 8; i += 1) {
+    const q = i / 7;
+    addCurve([
+      { x: 451 - 5 * q, y: 136 + 7 * q },
+      { x: 473 + 5 * q, y: 202 + 12 * q },
+      { x: 453 - 8 * q, y: 306 + 12 * q },
+      { x: 376 - 13 * q, y: 359 + 9 * q },
+    ], 'rim', 0.72 + q * 0.04, 1.15);
+  }
+
+  // A few rear folds give the hood weight without filling the negative-space face.
+  for (let i = 0; i < 7; i += 1) {
+    const q = i / 6;
+    addCurve([
+      { x: 74 + 13 * i, y: 382 + 6 * i },
+      { x: 120 + 14 * i, y: 326 + 5 * i },
+      { x: 181 + 13 * i, y: 346 + 9 * i },
+      { x: 238 + 11 * i, y: 408 + 8 * i },
+    ], 'fold', 0.42 + 0.28 * q, 0.95);
+  }
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    scale = rect.width / W;
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+    context.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+    draw(performance.now(), 1, true);
+  };
+
+  const updatePointer = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = (event.clientX - rect.left) / scale;
+    pointer.y = (event.clientY - rect.top) / scale;
+    pointer.kind = event.pointerType || 'mouse';
+  };
+
+  const drawLine = (line) => {
+    const points = line.points;
+    context.beginPath();
+    context.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length - 1; i += 1) {
+      const xc = (points[i].x + points[i + 1].x) * 0.5;
+      const yc = (points[i].y + points[i + 1].y) * 0.5;
+      context.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    const end = points[points.length - 1];
+    context.lineTo(end.x, end.y);
+    context.globalAlpha = line.opacity;
+    context.lineWidth = line.width;
+    context.stroke();
+  };
+
+  function draw(now, dt = 1, immediate = false) {
+    context.globalAlpha = 1;
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, W, H);
+    context.strokeStyle = '#009FE8';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+
+    const radius = 90 / Math.max(scale, 0.55);
+    const maxPushPx = pointer.kind === 'touch' ? 17 : 24;
+    const maxPush = maxPushPx / Math.max(scale, 0.55);
+    const ripple = 1.35 / Math.max(scale, 0.7);
+
+    lines.forEach((line, lineIndex) => {
+      line.points.forEach((point, pointIndex) => {
+        const previous = line.points[Math.max(0, pointIndex - 1)].base;
+        const next = line.points[Math.min(line.points.length - 1, pointIndex + 1)].base;
+        const tangentX = next.x - previous.x;
+        const tangentY = next.y - previous.y;
+        const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+        const normalX = -tangentY / tangentLength;
+        const normalY = tangentX / tangentLength;
+        const wave = Math.sin(now * 0.00072 + line.phase + pointIndex * 0.055) * ripple;
+        let targetX = point.base.x + normalX * wave;
+        let targetY = point.base.y + normalY * wave;
+
+        if (pointer.active) {
+          let dx = point.base.x - pointer.x;
+          let dy = point.base.y - pointer.y;
+          let distance = Math.hypot(dx, dy);
+          if (distance < radius) {
+            if (distance < 0.001) {
+              const angle = lineIndex * 0.7 + pointIndex * 0.2;
+              dx = Math.cos(angle);
+              dy = Math.sin(angle);
+              distance = 1;
+            }
+            const falloff = 1 - distance / radius;
+            const strength = maxPush * falloff * falloff * (3 - 2 * falloff);
+            targetX += (dx / distance) * strength;
+            targetY += (dy / distance) * strength;
+          }
+        }
+
+        if (immediate) {
+          point.x = targetX;
+          point.y = targetY;
+          point.vx = 0;
+          point.vy = 0;
+          return;
+        }
+
+        const spring = 0.18;
+        const damping = Math.pow(0.72, dt);
+        point.vx = (point.vx + (targetX - point.x) * spring * dt) * damping;
+        point.vy = (point.vy + (targetY - point.y) * spring * dt) * damping;
+        point.x += point.vx * dt;
+        point.y += point.vy * dt;
+      });
+      drawLine(line);
+    });
+    context.globalAlpha = 1;
+  }
+
+  const tick = (now) => {
+    const dt = Math.min(2, Math.max(0.35, (now - lastTime) / 16.667));
+    lastTime = now;
+    draw(now, dt);
+    frame = visible ? requestAnimationFrame(tick) : 0;
+  };
+
+  const start = () => {
+    if (frame || !visible || document.hidden) return;
+    lastTime = performance.now();
+    frame = requestAnimationFrame(tick);
+  };
+
+  canvas.addEventListener('pointerenter', (event) => {
+    if (event.pointerType === 'touch') return;
+    updatePointer(event);
+    pointer.active = true;
+  });
+  canvas.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch') return;
+    updatePointer(event);
+    pointer.active = true;
+  });
+  canvas.addEventListener('pointerleave', (event) => {
+    if (event.pointerType !== 'touch') pointer.active = false;
+  });
+  canvas.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch') return;
+    updatePointer(event);
+    pointer.active = true;
+    window.clearTimeout(touchTimer);
+    touchTimer = window.setTimeout(() => { pointer.active = false; }, 360);
+  }, { passive: true });
+  canvas.addEventListener('pointercancel', () => {
+    window.setTimeout(() => { pointer.active = false; }, 120);
+  }, { passive: true });
+
+  const observer = new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible) start();
+  }, { rootMargin: '80px' });
+  observer.observe(wrap);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && frame) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    } else {
+      start();
+    }
+  });
+  window.addEventListener('resize', resize, { passive: true });
+
+  resize();
+  start();
+})();
+</script>
+
+<style>
+  .hood-art {
+    position: relative;
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    isolation: isolate;
+  }
+
+  .hood-art::after {
+    position: absolute;
+    z-index: -1;
+    right: 5%;
+    bottom: 8%;
+    width: 52%;
+    height: 20%;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    content: '';
+    filter: blur(60px);
+    opacity: 0.4;
+  }
+
+  .hood-art__canvas,
+  .hood-art__fallback {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 31 / 27;
+  }
+
+  .hood-art__canvas {
+    background: #000 url('/images/hood-static.svg') center / contain no-repeat;
+    cursor: crosshair;
+    touch-action: pan-y;
+  }
+
+  .hood-art__fallback {
+    display: none;
+  }
+
+  .hood-art__fallback.is-visible {
+    display: block;
+  }
+
+  .hood-art__hint {
+    position: absolute;
+    right: 3%;
+    bottom: 2%;
+    display: flex;
+    margin: 0;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--faint);
+    font-family: ui-monospace, monospace;
+    font-size: 0.67rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hood-art__hint span {
+    width: 1.4rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .hood-art {
+      width: min(86vw, 20rem);
+    }
+
+    .hood-art__hint {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hood-art__canvas,
+    .hood-art__hint {
+      display: none;
+    }
+
+    .hood-art__fallback {
+      display: block;
+    }
+  }
+</style>

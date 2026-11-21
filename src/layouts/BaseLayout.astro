@@ -1,0 +1,67 @@
+---
+import '@fontsource-variable/geist';
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = 'KeepMeDark — The privacy tool directory',
+  description = 'An independent directory of tools for private browsing, messaging, email and networks.',
+  image = '/images/social-card.svg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="KeepMeDark" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header" data-site-header>
+      <a class="site-header__brand" href="/" aria-label="KeepMeDark home">
+        <Logo />
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/#directory">Directory</a>
+        <a href="/selection-criteria/">Selection criteria</a>
+      </nav>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <div class="site-footer__brand">
+        <Logo />
+        <p>Tools that help you disclose less.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="/#directory">Directory</a>
+        <a href="/selection-criteria/">Selection criteria</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="https://github.com/StarMKT/keepmedark.github.io" rel="noreferrer">GitHub</a>
+      </nav>
+      <p class="site-footer__note">No tracking. No cookies. Search stays on your device.</p>
+    </footer>
+  </body>
+</html>
